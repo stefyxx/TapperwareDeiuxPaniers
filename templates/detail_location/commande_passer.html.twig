@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CommandeController!
+{% endblock %}
+
+{% block body %}
+
+<h2>La commande complete avec id est ici</h2>
+{{ dump (commandeBD) }}
+<h3>Date commande:</h3>
+{{ commandeBD.Date_paiment | date('Y-m-d')}}
+
+<h3>Etat:</h3>
+{{ commandeBD.etat }}
+<hr>
+{% for detail in commandeBD.detailProduitLocations %}
+	<h4>{{ detail.PrototypeProduit.Nom_produit }}:
+		{{ detail.QuantiteTotal }} unités
+        
+		{#<img style="width:10em" src='{{ asset ("/images/" ~ detail.produit.lien ) }}'/>#}
+
+		{{ detail.Montant}} prix total par produit
+	</h4>
+	<hr>
+{% endfor %}
+{#<h3>Total:
+{% for detail in commandeBD.detailProduitLocations %}
+{{ detail.Montant +=}}
+{% endfor %}
+ euros</h3>#}
+{% endblock %}

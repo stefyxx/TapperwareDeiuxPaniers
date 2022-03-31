@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PanierController!{% endblock %}
+
+{% block body %}
+<h1>Contenu du Panier</h1>
+{{ dump (panier) }}
+<br>
+{{dump(panier.detailProduitLocations)}} {# NULLL #}
+
+{% for detail in panier.detailProduitLocations %}
+
+{{ dump (detail)}}
+
+{#<h4>{{ detail.PrototypeProduit.Nom_produit }}: </h4>#}
+
+
+{# aussi clickable ici  #}
+{#<a href='{{ path ("app_produit_show",{'id': detail.PrototypeProduit.id}) }}'>
+<br>
+<img src='{{ asset ("/images/" ~ detail.PrototypeProduit.Image ) }}' style="width:150px"/>
+</a>
+{{ detail.QuantiteTotal }} unités</h4>
+
+
+<a href='{{ path ("panier_effacer_detail",{'id': detail.PrototypeProduit.id}) }}'>Effacer</a>
+
+
+<hr>#}
+{% endfor %}
+
+
+{#<h3>Total: {{ panier.detailProduitLocations.Montant }} euros</h3>#}
+
+{# Créez les liens selon vos besoins  #}
+<h3><a href="{{ path ('commande_passer') }}">Passer la commande</a></h3>  
+<h3><a href="{{ path ('app_produit_index') }}">Retour aux achats</a></h3>  
+
+
+{% endblock %}
