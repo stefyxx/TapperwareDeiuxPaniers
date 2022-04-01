@@ -104,13 +104,20 @@ class PanierController extends AbstractController
         //in panier non ho le quantità, 
         //queste sono in DetailProduitLocation()
 
-
         $panier = $session->get('panier', new Panier());
         if (!empty($panier)) {
+
             $resto = $repResto->find($id_resto);
             $panier->setRestaurant($resto);
             $panier->setDatePaiment(new DateTime());
             $resto->addPanier($panier);
+
+            //fare funsione a parte=
+            foreach ($panier->getDetailProduitLocations() as $detailProd) {
+                if($detailProd->getPrototypeProduit()->getId() == $id){
+                    $detailProd->setMontant($quantite);
+                }
+            }
 
             $detail = new DetailProduitLocation();
 
@@ -119,10 +126,10 @@ class PanierController extends AbstractController
             $detail->setQuantiteTotal($quantite);
             $detail->setQuantiteResteRendre(0);
 
-            /*$prixUnitaire = $produit->getPrixLocationUnitaire();
+            $prixUnitaire = $produit->getPrixLocationUnitaire();
             $montant = $prixUnitaire * $quantite;
             $detail->setMontant($montant);
-            $detail->setMontantParUnite($prixUnitaire);*/
+            $detail->setMontantParUnite($prixUnitaire);
 
 
             //fare una funzione che scala lo stock
@@ -130,6 +137,15 @@ class PanierController extends AbstractController
 
             $panier->addDetailProduitLocation($detail);
             $detail->setPanier($panier);
+
+            $total=0;
+            foreach ($panier->getDetailProduitLocations() as $detailProd) {
+                $montant= $detailProd->getMontant();
+                $total+=$montant;
+            }
+            $panier->setTotal($total);
+
+            
         }
 
         $session->set('panier', $panier);

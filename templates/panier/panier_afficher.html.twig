@@ -6,31 +6,23 @@
 <h1>Contenu du Panier</h1>
 {{ dump (panier) }}
 <br>
-{{dump(panier.detailProduitLocations)}} {# NULLL #}
+{{dump(panier.detailProduitLocations)}}
 
 {% for detail in panier.detailProduitLocations %}
 
-{{ dump (detail)}}
+    <h4> {{ detail.PrototypeProduit.NomProduit }}: </h4>
 
-{#<h4>{{ detail.PrototypeProduit.Nom_produit }}: </h4>#}
-
-
-{# aussi clickable ici  #}
-{#<a href='{{ path ("app_produit_show",{'id': detail.PrototypeProduit.id}) }}'>
-<br>
-<img src='{{ asset ("/images/" ~ detail.PrototypeProduit.Image ) }}' style="width:150px"/>
-</a>
-{{ detail.QuantiteTotal }} unités</h4>
-
-
-<a href='{{ path ("panier_effacer_detail",{'id': detail.PrototypeProduit.id}) }}'>Effacer</a>
-
-
-<hr>#}
+    <p>
+    <span>{{ detail.QuantiteTotal }} unités</span>
+    <span><a href='{{ path ("app_produit_show",{'id': detail.PrototypeProduit.id}) }}'>show</a></span>
+    {#<img src='{{ asset ("/images/" ~ detail.PrototypeProduit.Image ) }}' style="width:150px"/>#}
+    <span><a href='{{ path ("panier_effacer_detail",{'id': detail.PrototypeProduit.id}) }}'>Effacer</a><span>
+    <span>Total produit: {{ detail.Montant }} euros</span>
+    </p>
+    <hr>
 {% endfor %}
 
-
-{#<h3>Total: {{ panier.detailProduitLocations.Montant }} euros</h3>#}
+<h3>Total : {{ panier.Total }} euros</h3>
 
 {# Créez les liens selon vos besoins  #}
 <h3><a href="{{ path ('commande_passer') }}">Passer la commande</a></h3>  

@@ -27,6 +27,9 @@ class Panier
     #[ORM\OneToMany(mappedBy: 'Panier', targetEntity: DetailProduitRetour::class)]
     private $detailProduitRetours;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private $Total;
+
     public function __construct()
     {
         $this->detailProduitLocations = new ArrayCollection();
@@ -118,6 +121,18 @@ class Panier
                 $detailProduitRetour->setPanier(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTotal(): ?float
+    {
+        return $this->Total;
+    }
+
+    public function setTotal(?float $Total): self
+    {
+        $this->Total = $Total;
 
         return $this;
     }

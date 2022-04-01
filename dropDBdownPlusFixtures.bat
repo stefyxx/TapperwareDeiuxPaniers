@@ -1,3 +1,4 @@
+@Rem symfony composer req symfony/orm-pack
 del migrations/V*
 symfony console doctrine:database:drop --force --no-interaction 
 symfony console doctrine:database:create --no-interaction

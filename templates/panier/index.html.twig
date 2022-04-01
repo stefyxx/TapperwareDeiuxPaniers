@@ -24,7 +24,7 @@
 					<td>{{ prodotto.product.NomProduit }}</td>
 					<td>{{ prodotto.product.PrixLocationUnitaire }} €</td>
 					<td>{{ prodotto.quantity }}</td>
-					<td>{{  prodotto.product.PrixLocationUnitaire * prodotto.quantity }}
+					<td>{{ prodotto.product.PrixLocationUnitaire * prodotto.quantity }}
 					</td>
 					<td>
 						<a href="{{ path('produit_remove', {'id': prodotto.product.id})}}">
