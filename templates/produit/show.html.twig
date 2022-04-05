@@ -71,8 +71,7 @@
                 {% endfor %}
                 </select>
 
-				{#<input type="hidden" name="id" value="{{ prototype_produit.id }}">		#}
-				<input type="hidden" name="id" value="{{prototype_produit.id}}>
+				<input type="hidden" name="id" value="{{prototype_produit.id}}">
 				
 				<label for ="quantite"> Quantité à rajouter: </label>
 				<input type="number" name="quantite" value="10" min="0" step="10" max="{{prototype_produit.Stock}}">

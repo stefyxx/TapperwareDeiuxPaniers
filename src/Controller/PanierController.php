@@ -10,6 +10,7 @@ use App\Repository\PrototypeProduitRepository;
 use App\Repository\RestaurantRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -54,7 +55,7 @@ class PanierController extends AbstractController
         }
 
         return $this->render('panier/index.html.twig', [
-            'controller_name' => 'CartController',
+            'controller_name' => 'PanierController',
             'items' => $panierWithData,
             'totale' => $total
         ]);
@@ -98,7 +99,7 @@ class PanierController extends AbstractController
         //é un Resto che fa il paniere -> loggato -> Resto
         $id_resto = $req->request->get('id_resto');
 
-        $id = $req->request->get('id');
+        $idProdotto = $req->request->get('id');
         $quantite = $req->request->get('quantite');
 
         //in panier non ho le quantità, 
@@ -111,32 +112,42 @@ class PanierController extends AbstractController
             $panier->setRestaurant($resto);
             $panier->setDatePaiment(new DateTime());
             $resto->addPanier($panier);
-
-            //fare funsione a parte=
+            $found = false;
+            //fare funsione a parte =
+            $test = "idProdottoInput:".$idProdotto;
             foreach ($panier->getDetailProduitLocations() as $detailProd) {
-                if($detailProd->getPrototypeProduit()->getId() == $id){
-                    $detailProd->setMontant($quantite);
+                // $test = $test."_".$detailProd->getPrototypeProduit()->getId();
+                if($detailProd->getPrototypeProduit()->getId() == $idProdotto){
+                    $found = true;
+                    $p=$detailProd->getQuantiteTotal()+$quantite;
+                    $detailProd->setQuantiteTotal($p);
+                    $prixUnitaire = $detailProd->getPrototypeProduit()->getPrixLocationUnitaire();
+                    $montant = $prixUnitaire * $p;
+                    $detailProd->setMontant($montant);
                 }
             }
 
-            $detail = new DetailProduitLocation();
+            if (!$found) {
+                $detail = new DetailProduitLocation();
+                $produit = $repProduit->find($idProdotto);
+                $produit->setDescription($idProdotto);
+                $detail->setPrototypeProduit($produit);
+                $detail->setQuantiteTotal($quantite);
+                $detail->setQuantiteResteRendre(0);
+                $prixUnitaire = $produit->getPrixLocationUnitaire();
+                $montant = $prixUnitaire * $quantite;
+                $detail->setMontant($montant);
+                $detail->setMontantParUnite($prixUnitaire);
+                $panier->addDetailProduitLocation($detail);
+                $detail->setPanier($panier);
+            }
 
-            $produit = $repProduit->find($id);
-            $detail->setPrototypeProduit($produit);
-            $detail->setQuantiteTotal($quantite);
-            $detail->setQuantiteResteRendre(0);
 
-            $prixUnitaire = $produit->getPrixLocationUnitaire();
-            $montant = $prixUnitaire * $quantite;
-            $detail->setMontant($montant);
-            $detail->setMontantParUnite($prixUnitaire);
 
 
             //fare una funzione che scala lo stock
             //$repProduit->removeStock($quantite);
 
-            $panier->addDetailProduitLocation($detail);
-            $detail->setPanier($panier);
 
             $total=0;
             foreach ($panier->getDetailProduitLocations() as $detailProd) {
